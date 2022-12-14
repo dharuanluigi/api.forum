@@ -3,6 +3,7 @@ package br.com.alura.api.forum.controller;
 import br.com.alura.api.forum.dto.AddedTopicDTO;
 import br.com.alura.api.forum.dto.InsertTopicDTO;
 import br.com.alura.api.forum.dto.ListTopicsDTO;
+import br.com.alura.api.forum.dto.TopicDetailsDTO;
 import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
 import jakarta.validation.Valid;
@@ -37,5 +38,17 @@ public class TopicController {
         repository.save(topic);
         var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
         return ResponseEntity.created(uri).body(new AddedTopicDTO(topic));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TopicDetailsDTO> findById(@PathVariable Long id) {
+        if(repository.findById(id).isPresent()) {
+            var topic = repository.findById(id).get();
+            var response = new TopicDetailsDTO(topic);
+            return ResponseEntity.ok(response);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
