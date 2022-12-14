@@ -5,6 +5,8 @@ import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +26,7 @@ public class TopicController {
     private CourseRepository courseRepository;
 
     @GetMapping
+    @Cacheable(value = "topicAllList")
     public ResponseEntity<Page<ListTopicsDTO>> findAllOrByCourseName(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
         if (course_name != null) {
             var foundedTopics = repository.findByCourse_Name(course_name, pagination);
@@ -37,7 +40,9 @@ public class TopicController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
+    @CacheEvict(value = "topicAllList", allEntries = true)
+    public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO,
+                                                UriComponentsBuilder uriBuilder) {
         var topic = insertTopicDTO.toEntity(courseRepository);
         repository.save(topic);
         var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
@@ -47,14 +52,13 @@ public class TopicController {
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailsDTO> findById(@PathVariable Long id) {
         var topic = repository.getReferenceById(id);
-
-
         var response = new TopicDetailsDTO(topic);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<TopicDetailsDTO> update(@PathVariable Long id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var topic = repository.getReferenceById(id);
         topic.updateData(updateTopicDTO);
@@ -63,6 +67,7 @@ public class TopicController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
