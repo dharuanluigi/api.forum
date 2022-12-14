@@ -5,6 +5,7 @@ import br.com.alura.api.forum.dto.InsertTopicDTO;
 import br.com.alura.api.forum.dto.ListTopicsDTO;
 import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class TopicController {
     }
 
     @PostMapping
-    public ResponseEntity<AddedTopicDTO> insert(@RequestBody InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
         var topic = insertTopicDTO.toEntity(courseRepository);
         repository.save(topic);
         var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
