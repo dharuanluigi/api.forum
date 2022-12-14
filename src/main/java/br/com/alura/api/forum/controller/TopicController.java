@@ -5,12 +5,13 @@ import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/topics")
@@ -23,11 +24,15 @@ public class TopicController {
     private CourseRepository courseRepository;
 
     @GetMapping
-    public List<ListTopicsDTO> findAllOrByCourseName(String course_name) {
+    public ResponseEntity<Page<ListTopicsDTO>> findAllOrByCourseName(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
         if (course_name != null) {
-            return repository.findByCourse_Name(course_name);
+            var foundedTopics = repository.findByCourse_Name(course_name, pagination);
+            var foundedTopicsDTOs = foundedTopics.map(ListTopicsDTO::new);
+            return ResponseEntity.ok(foundedTopicsDTOs);
         }
-        return repository.findAll().stream().map(ListTopicsDTO::new).toList();
+        var allTopics = repository.findAll(pagination);
+        var allTopicsDTOs = allTopics.map(ListTopicsDTO::new);
+        return ResponseEntity.ok(allTopicsDTOs);
     }
 
     @PostMapping
@@ -42,6 +47,8 @@ public class TopicController {
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailsDTO> findById(@PathVariable Long id) {
         var topic = repository.getReferenceById(id);
+
+
         var response = new TopicDetailsDTO(topic);
         return ResponseEntity.ok(response);
     }
