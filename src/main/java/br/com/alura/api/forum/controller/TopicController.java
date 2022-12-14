@@ -1,14 +1,12 @@
 package br.com.alura.api.forum.controller;
 
-import br.com.alura.api.forum.dto.AddedTopicDTO;
-import br.com.alura.api.forum.dto.InsertTopicDTO;
-import br.com.alura.api.forum.dto.ListTopicsDTO;
-import br.com.alura.api.forum.dto.TopicDetailsDTO;
+import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -45,5 +43,13 @@ public class TopicController {
         var topic = repository.getReferenceById(id);
         var response = new TopicDetailsDTO(topic);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateTopicDTO updateTopicDTO) {
+        var topic = repository.getReferenceById(id);
+        topic.updateData(updateTopicDTO);
+        return ResponseEntity.noContent().build();
     }
 }

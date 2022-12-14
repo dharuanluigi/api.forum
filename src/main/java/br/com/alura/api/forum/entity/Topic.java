@@ -1,5 +1,6 @@
 package br.com.alura.api.forum.entity;
 
+import br.com.alura.api.forum.dto.UpdateTopicDTO;
 import br.com.alura.api.forum.entity.enums.TopicStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,5 +51,15 @@ public class Topic {
 	@Override
 	public int hashCode() {
 		return getClass().hashCode();
+	}
+
+	public void updateData(UpdateTopicDTO updateTopicDTO) {
+		if (updateTopicDTO.title() != null) {
+			this.title = updateTopicDTO.title();
+		}
+
+		if (updateTopicDTO.message() != null) {
+			this.message = updateTopicDTO.message();
+		}
 	}
 }
