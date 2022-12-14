@@ -42,13 +42,8 @@ public class TopicController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailsDTO> findById(@PathVariable Long id) {
-        if(repository.findById(id).isPresent()) {
-            var topic = repository.findById(id).get();
-            var response = new TopicDetailsDTO(topic);
-            return ResponseEntity.ok(response);
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+        var topic = repository.getReferenceById(id);
+        var response = new TopicDetailsDTO(topic);
+        return ResponseEntity.ok(response);
     }
 }
