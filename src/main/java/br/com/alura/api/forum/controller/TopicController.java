@@ -31,6 +31,7 @@ public class TopicController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
         var topic = insertTopicDTO.toEntity(courseRepository);
         repository.save(topic);
@@ -47,9 +48,9 @@ public class TopicController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateTopicDTO updateTopicDTO) {
+    public ResponseEntity<TopicDetailsDTO> update(@PathVariable Long id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var topic = repository.getReferenceById(id);
         topic.updateData(updateTopicDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new TopicDetailsDTO(topic));
     }
 }
