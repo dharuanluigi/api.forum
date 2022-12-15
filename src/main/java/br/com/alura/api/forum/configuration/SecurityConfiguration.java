@@ -35,6 +35,7 @@ public class SecurityConfiguration {
             auth.requestMatchers(HttpMethod.GET, "/topics").permitAll();
             auth.requestMatchers(HttpMethod.GET, "/topics/*").permitAll();
             auth.requestMatchers(HttpMethod.POST, "/auth").permitAll();
+            auth.requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR");
             auth.anyRequest().authenticated();
             try {
                 auth.and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

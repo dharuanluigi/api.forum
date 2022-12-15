@@ -1,4 +1,11 @@
 INSERT INTO tb_user(name, email, password) VALUES('Aluno', 'aluno@email.com', '{bcrypt}$2y$10$VM6WvTFWaobqnDelyWQg2Oa0Hecbs31vNs54kXzenGQ2dSJdv4plC');
+INSERT INTO tb_user(name, email, password) VALUES('Mod', 'mod@email.com', '{bcrypt}$2y$10$VM6WvTFWaobqnDelyWQg2Oa0Hecbs31vNs54kXzenGQ2dSJdv4plC');
+
+INSERT INTO tb_profile(id, name) VALUES(1, 'ROLE_STUDENT');
+INSERT INTO tb_profile(id, name) VALUES(2, 'ROLE_MODERATOR');
+
+INSERT INTO tb_user_profiles(user_id, profiles_id) VALUES(1, 1);
+INSERT INTO tb_user_profiles(user_id, profiles_id) VALUES(2, 2);
 
 INSERT INTO tb_course(name, category) VALUES('Spring Boot', 'Programação');
 INSERT INTO tb_course(name, category) VALUES('HTML 5', 'Front-end');
