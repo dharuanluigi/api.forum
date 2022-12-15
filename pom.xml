@@ -84,6 +84,11 @@
         </dependency>
         <!-- jjwt old dependencies needs to be work-->
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
