@@ -25,4 +25,18 @@ public class TokenService {
 
         return Jwts.builder().setIssuer("Forum alura api").setSubject(user.getId().toString()).setIssuedAt(now).setExpiration(expirationInMs).signWith(SignatureAlgorithm.HS256, this.secret).compact();
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Long getUserId(String token) {
+        var claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Long.parseLong(claims.getSubject());
+    }
 }
