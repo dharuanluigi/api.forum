@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@Profile("prod")
+@Profile({"prod", "test"})
 public class AuthenticationController {
 
     @Autowired
