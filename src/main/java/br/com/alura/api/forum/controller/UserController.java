@@ -1,8 +1,6 @@
 package br.com.alura.api.forum.controller;
 
-import br.com.alura.api.forum.dto.CreatedUserDTO;
-import br.com.alura.api.forum.dto.InsertUserDTO;
-import br.com.alura.api.forum.dto.ListUserDTO;
+import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.services.interfaces.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +33,11 @@ public class UserController {
     public ResponseEntity<ListUserDTO> findById(@PathVariable Long id) {
         var foundedUser = userService.findById(id);
         return ResponseEntity.ok(foundedUser);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UpdatedUserDTO> update(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO) {
+        var user = userService.update(id, updateUserDTO);
+        return ResponseEntity.ok(user);
     }
 }

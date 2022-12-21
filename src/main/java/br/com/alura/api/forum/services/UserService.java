@@ -1,9 +1,6 @@
 package br.com.alura.api.forum.services;
 
-import br.com.alura.api.forum.dto.CreatedUserDTO;
-import br.com.alura.api.forum.dto.InsertUserDTO;
-import br.com.alura.api.forum.dto.ListProfileDTO;
-import br.com.alura.api.forum.dto.ListUserDTO;
+import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.entity.User;
 import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
@@ -13,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +24,7 @@ public class UserService implements IUserService {
     private ProfileRepository profileRepository;
 
     @Override
+    @Transactional
     public CreatedUserDTO create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
         var user = userRepository.save(new User(null, insertUserDTO.name(), insertUserDTO.email(),
@@ -44,5 +43,13 @@ public class UserService implements IUserService {
     public ListUserDTO findById(Long id) {
         var user = userRepository.getReferenceById(id);
         return new ListUserDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public UpdatedUserDTO update(Long id, UpdateUserDTO updateUserDTO) {
+        var user = userRepository.getReferenceById(id);
+        user.update(updateUserDTO);
+        return new UpdatedUserDTO(user);
     }
 }
