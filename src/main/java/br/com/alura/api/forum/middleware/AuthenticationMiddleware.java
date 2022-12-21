@@ -12,13 +12,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class AuthenticationHandler extends OncePerRequestFilter {
+public class AuthenticationMiddleware extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 
     private final UserRepository userRepository;
 
-    public AuthenticationHandler(TokenService tokenService, UserRepository userRepository) {
+    public AuthenticationMiddleware(TokenService tokenService, UserRepository userRepository) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
     }
@@ -38,9 +38,12 @@ public class AuthenticationHandler extends OncePerRequestFilter {
 
     private void authenticateClient(String token) {
         var id = tokenService.getUserId(token);
-        var user = userRepository.findById(id).get();
-        var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        var browseUser = userRepository.findById(id);
+        if (browseUser.isPresent()) {
+            var user = browseUser.get();
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
     }
 
     private String getToken(HttpServletRequest request) {

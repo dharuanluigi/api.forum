@@ -1,10 +1,11 @@
-package br.com.alura.api.forum.services.interfaces;
+package br.com.alura.api.forum.services;
 
 import br.com.alura.api.forum.dto.CreatedUserDTO;
 import br.com.alura.api.forum.dto.InsertUserDTO;
 import br.com.alura.api.forum.entity.User;
 import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
+import br.com.alura.api.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
