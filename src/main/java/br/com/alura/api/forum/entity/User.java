@@ -1,5 +1,6 @@
 package br.com.alura.api.forum.entity;
 
+import br.com.alura.api.forum.dto.UpdateUserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -71,5 +72,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(UpdateUserDTO updateUserDTO) {
+        if (updateUserDTO.name() != null) {
+            this.name = updateUserDTO.name();
+        }
     }
 }
