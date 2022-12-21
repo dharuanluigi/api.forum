@@ -52,4 +52,10 @@ public class UserService implements IUserService {
         user.update(updateUserDTO);
         return new UpdatedUserDTO(user);
     }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 }
