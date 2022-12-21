@@ -9,7 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-@Profile("dev")
+@Profile("default")
 public class DevSecurityConfiguration {
 
     @Bean

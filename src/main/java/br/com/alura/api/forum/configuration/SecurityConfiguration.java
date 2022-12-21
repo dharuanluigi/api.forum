@@ -1,6 +1,6 @@
 package br.com.alura.api.forum.configuration;
 
-import br.com.alura.api.forum.middleware.AuthenticationHandler;
+import br.com.alura.api.forum.middleware.AuthenticationMiddleware;
 import br.com.alura.api.forum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ public class SecurityConfiguration {
             try {
                 auth.and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 // added middleware for authentication
-                auth.and().addFilterBefore(new AuthenticationHandler(tokenService, userRepository),
+                auth.and().addFilterBefore(new AuthenticationMiddleware(tokenService, userRepository),
                         UsernamePasswordAuthenticationFilter.class);
             } catch (Exception e) {
                 throw new RuntimeException(e);
