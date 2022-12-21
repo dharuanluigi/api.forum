@@ -11,4 +11,6 @@ public interface IUserService {
     CreatedUserDTO create(InsertUserDTO insertUserDTO);
 
     Page<ListUserDTO> findAll(Pageable pagination);
+
+    ListUserDTO findById(Long id);
 }

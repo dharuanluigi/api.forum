@@ -39,4 +39,10 @@ public class UserService implements IUserService {
         return foundedUsers.map(u -> new ListUserDTO(u.getId(), u.getEmail(),
                 u.getProfiles().stream().map(uu -> new ListProfileDTO(uu.getName())).toList()));
     }
+
+    @Override
+    public ListUserDTO findById(Long id) {
+        var user = userRepository.getReferenceById(id);
+        return new ListUserDTO(user);
+    }
 }

@@ -30,4 +30,10 @@ public class UserController {
         var content = userService.findAll(pagination);
         return ResponseEntity.ok(content);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ListUserDTO> findById(@PathVariable Long id) {
+        var foundedUser = userService.findById(id);
+        return ResponseEntity.ok(foundedUser);
+    }
 }
