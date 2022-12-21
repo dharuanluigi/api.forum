@@ -41,6 +41,6 @@ public class ExceptionMiddleware {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ErrorResponseDTO constraintException(SQLIntegrityConstraintViolationException e) {
-        return new ErrorResponseDTO("Error when manipulate your request, contact system admin");
+        return new ErrorResponseDTO("E-mail already is used, choose another one");
     }
 }
