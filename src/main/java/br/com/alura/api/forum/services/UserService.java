@@ -7,6 +7,7 @@ import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
 import br.com.alura.api.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class UserService implements IUserService {
     public CreatedUserDTO create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
         var user = userRepository.save(new User(null, insertUserDTO.name(), insertUserDTO.email(),
-                insertUserDTO.password(), List.of(profiles)));
+                new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles)));
         return new CreatedUserDTO(user);
     }
 }
