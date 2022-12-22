@@ -13,4 +13,6 @@ public interface IUserService {
     ListUserDTO findById(Long id);
 
     UpdatedUserDTO update(Long id, UpdateUserDTO updateUserDTO);
+
+    void delete(Long id);
 }

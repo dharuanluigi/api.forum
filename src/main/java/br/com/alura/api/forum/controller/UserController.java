@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/users")
@@ -18,9 +19,11 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping
-    public ResponseEntity<CreatedUserDTO> create(@RequestBody @Valid InsertUserDTO insertUserDTO) {
+    public ResponseEntity<CreatedUserDTO> create(@RequestBody @Valid InsertUserDTO insertUserDTO,
+                                                 UriComponentsBuilder uriBuilder) {
         var userCreated = userService.create(insertUserDTO);
-        return ResponseEntity.ok(userCreated);
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userCreated.id()).toUri();
+        return ResponseEntity.created(uri).body(userCreated);
     }
 
     @GetMapping
@@ -39,5 +42,11 @@ public class UserController {
     public ResponseEntity<UpdatedUserDTO> update(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO) {
         var user = userService.update(id, updateUserDTO);
         return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
