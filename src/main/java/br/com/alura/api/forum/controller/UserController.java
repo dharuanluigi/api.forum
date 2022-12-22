@@ -1,7 +1,7 @@
 package br.com.alura.api.forum.controller;
 
 import br.com.alura.api.forum.dto.*;
-import br.com.alura.api.forum.services.interfaces.IUserService;
+import br.com.alura.api.forum.service.interfaces.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
