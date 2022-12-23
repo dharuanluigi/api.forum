@@ -4,14 +4,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_profile")
+@Table(name = "tb_category")
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Profile implements GrantedAuthority {
+@NoArgsConstructor
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -19,8 +22,6 @@ public class Profile implements GrantedAuthority {
     @Column(nullable = false)
     private String name;
 
-    @Override
-    public String getAuthority() {
-        return this.name;
-    }
+    @OneToMany
+    private List<Course> courses = new ArrayList<>();
 }

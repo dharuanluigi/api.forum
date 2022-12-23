@@ -19,17 +19,28 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Topic {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String message;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(100) default 'NOT_ANSWERED'")
     private TopicStatus status = TopicStatus.NOT_ANSWERED;
+
     @ManyToOne
     private User author;
+
     @ManyToOne
     private Course course;
+
     @OneToMany(mappedBy = "topic")
     private List<Answer> answers = new ArrayList<>();
 
