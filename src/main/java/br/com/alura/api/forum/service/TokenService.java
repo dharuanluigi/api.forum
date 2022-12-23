@@ -1,6 +1,7 @@
 package br.com.alura.api.forum.service;
 
 import br.com.alura.api.forum.entity.User;
+import br.com.alura.api.forum.exceptions.InvalidTokenException;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -28,7 +29,7 @@ public class TokenService implements ITokenService {
         try {
             return JWT.create().withIssuer("API Forum").withSubject(user.getEmail()).withExpiresAt(setExpiration()).sign(Algorithm.HMAC256(this.secret));
         } catch (JWTCreationException e) {
-            throw new RuntimeException("Error when try create auth token, contact system admin", e);
+            throw new InvalidTokenException("Error when try create auth token, contact system admin");
         }
     }
 
@@ -36,7 +37,7 @@ public class TokenService implements ITokenService {
         try {
             return JWT.require(Algorithm.HMAC256(this.secret)).withIssuer("API Forum").build().verify(removeTokenPrefix(jwtToken)).getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid jwt");
+            throw new InvalidTokenException("Invalid token. It is expired or is invalid");
         }
     }
 

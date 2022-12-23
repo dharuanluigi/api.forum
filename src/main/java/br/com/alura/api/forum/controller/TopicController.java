@@ -62,9 +62,8 @@ public class TopicController {
     @Transactional
     @CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<TopicDetailsDTO> update(@PathVariable String id, @RequestBody UpdateTopicDTO updateTopicDTO) {
-        var topic = repository.getReferenceById(id);
-        topic.updateData(updateTopicDTO);
-        return ResponseEntity.ok(new TopicDetailsDTO(topic));
+        var updatedTopic = service.update(id, updateTopicDTO);
+        return ResponseEntity.ok(updatedTopic);
     }
 
     @DeleteMapping("/{id}")
