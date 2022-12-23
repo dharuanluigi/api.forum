@@ -28,24 +28,24 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Page<ListUserDTO>> findAll(@PageableDefault Pageable pagination) {
-        var content = userService.findAll(pagination);
-        return ResponseEntity.ok(content);
+        var allUsers = userService.findAll(pagination);
+        return ResponseEntity.ok(allUsers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ListUserDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ListUserDTO> findById(@PathVariable String id) {
         var foundedUser = userService.findById(id);
         return ResponseEntity.ok(foundedUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdatedUserDTO> update(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<UpdatedUserDTO> update(@PathVariable String id, @RequestBody UpdateUserDTO updateUserDTO) {
         var user = userService.update(id, updateUserDTO);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }

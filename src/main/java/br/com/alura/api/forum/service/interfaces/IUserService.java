@@ -10,9 +10,9 @@ public interface IUserService {
 
     Page<ListUserDTO> findAll(Pageable pagination);
 
-    ListUserDTO findById(Long id);
+    ListUserDTO findById(String id);
 
-    UpdatedUserDTO update(Long id, UpdateUserDTO updateUserDTO);
+    UpdatedUserDTO update(String id, UpdateUserDTO updateUserDTO);
 
-    void delete(Long id);
+    void delete(String id);
 }
