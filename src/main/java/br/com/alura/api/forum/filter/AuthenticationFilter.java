@@ -49,6 +49,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         if (token == null || token.isBlank() || !token.startsWith("Bearer ")) {
             return null;
         }
-        return token.replace("Bearer ", "");
+        return token;
     }
 }

@@ -34,7 +34,7 @@ public class TokenService implements ITokenService {
 
     public String validate(String jwtToken) {
         try {
-            return JWT.require(Algorithm.HMAC256(this.secret)).withIssuer("API Forum").build().verify(jwtToken).getSubject();
+            return JWT.require(Algorithm.HMAC256(this.secret)).withIssuer("API Forum").build().verify(removeTokenPrefix(jwtToken)).getSubject();
         } catch (JWTVerificationException exception) {
             throw new RuntimeException("Invalid jwt");
         }
@@ -42,5 +42,9 @@ public class TokenService implements ITokenService {
 
     private Instant setExpiration() {
         return LocalDateTime.now().plusHours(this.expiration).toInstant(ZoneOffset.of("-03:00"));
+    }
+
+    private String removeTokenPrefix(String fullToken) {
+        return fullToken.replace("Bearer ", "");
     }
 }
