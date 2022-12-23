@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
-
-import java.util.Objects;
 
 @Entity
 @Table(name = "tb_course")
@@ -14,22 +11,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String name;
-	private String category;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		Course course = (Course) o;
-		return id != null && Objects.equals(id, course.id);
-	}
+    @Column(nullable = false)
+    private String name;
 
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
+    @ManyToOne
+    private Category category;
 }
