@@ -36,7 +36,7 @@ public class UserService implements IUserService {
     public Page<ListUserDTO> findAll(Pageable pagination) {
         var foundedUsers = userRepository.findAll(pagination);
         return foundedUsers.map(u -> new ListUserDTO(u.getId(), u.getEmail(),
-                u.getProfiles().stream().map(uu -> new ListProfileDTO(uu.getName())).toList()));
+                u.getProfiles().stream().map(p -> new ListProfileDTO(p.getName())).toList()));
     }
 
     @Override

@@ -28,8 +28,8 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Page<ListUserDTO>> findAll(@PageableDefault Pageable pagination) {
-        var content = userService.findAll(pagination);
-        return ResponseEntity.ok(content);
+        var allUsers = userService.findAll(pagination);
+        return ResponseEntity.ok(allUsers);
     }
 
     @GetMapping("/{id}")
