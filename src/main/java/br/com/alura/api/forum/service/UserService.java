@@ -40,14 +40,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ListUserDTO findById(Long id) {
+    public ListUserDTO findById(String id) {
         var user = userRepository.getReferenceById(id);
         return new ListUserDTO(user);
     }
 
     @Override
     @Transactional
-    public UpdatedUserDTO update(Long id, UpdateUserDTO updateUserDTO) {
+    public UpdatedUserDTO update(String id, UpdateUserDTO updateUserDTO) {
         var user = userRepository.getReferenceById(id);
         user.update(updateUserDTO);
         return new UpdatedUserDTO(user);
@@ -55,7 +55,7 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(String id) {
         userRepository.deleteById(id);
     }
 }
