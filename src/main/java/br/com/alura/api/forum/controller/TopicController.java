@@ -52,7 +52,7 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TopicDetailsDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<TopicDetailsDTO> findById(@PathVariable String id) {
         var topic = repository.getReferenceById(id);
         var response = new TopicDetailsDTO(topic);
         return ResponseEntity.ok(response);
@@ -61,7 +61,7 @@ public class TopicController {
     @PutMapping("/{id}")
     @Transactional
     @CacheEvict(value = "topicAllList", allEntries = true)
-    public ResponseEntity<TopicDetailsDTO> update(@PathVariable Long id, @RequestBody UpdateTopicDTO updateTopicDTO) {
+    public ResponseEntity<TopicDetailsDTO> update(@PathVariable String id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var topic = repository.getReferenceById(id);
         topic.updateData(updateTopicDTO);
         return ResponseEntity.ok(new TopicDetailsDTO(topic));
@@ -70,7 +70,7 @@ public class TopicController {
     @DeleteMapping("/{id}")
     @Transactional
     @CacheEvict(value = "topicAllList", allEntries = true)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
