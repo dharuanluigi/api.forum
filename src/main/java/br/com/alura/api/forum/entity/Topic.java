@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,47 +18,48 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Topic {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String title;
-	private String message;
-	private LocalDateTime createdAt = LocalDateTime.now();
-	@Enumerated(EnumType.STRING)
-	private TopicStatus status = TopicStatus.NOT_ANSWERED;
-	@ManyToOne
-	private User author;
-	@ManyToOne
-	private Course course;
-	@OneToMany(mappedBy = "topic")
-	private List<Answer> answers = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private String message;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
+    private TopicStatus status = TopicStatus.NOT_ANSWERED;
+    @ManyToOne
+    private User author;
+    @ManyToOne
+    private Course course;
+    @OneToMany(mappedBy = "topic")
+    private List<Answer> answers = new ArrayList<>();
 
-	public Topic(String title, String message, Course course) {
-		this.title = title;
-		this.message = message;
-		this.course = course;
-	}
+    public Topic(String title, String message, Course course, User author) {
+        this.title = title;
+        this.message = message;
+        this.course = course;
+        this.author = author;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		Topic topic = (Topic) o;
-		return id != null && Objects.equals(id, topic.id);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Topic topic = (Topic) o;
+        return id.equals(topic.id);
+    }
 
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
-	public void updateData(UpdateTopicDTO updateTopicDTO) {
-		if (updateTopicDTO.title() != null) {
-			this.title = updateTopicDTO.title();
-		}
+    public void updateData(UpdateTopicDTO updateTopicDTO) {
+        if (updateTopicDTO.title() != null) {
+            this.title = updateTopicDTO.title();
+        }
 
-		if (updateTopicDTO.message() != null) {
-			this.message = updateTopicDTO.message();
-		}
-	}
+        if (updateTopicDTO.message() != null) {
+            this.message = updateTopicDTO.message();
+        }
+    }
 }

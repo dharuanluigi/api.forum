@@ -3,6 +3,7 @@ package br.com.alura.api.forum.controller;
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
+import br.com.alura.api.forum.service.interfaces.ITopicService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,6 +26,9 @@ public class TopicController {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private ITopicService service;
+
     @GetMapping
     @Cacheable(value = "topicAllList")
     public ResponseEntity<Page<ListTopicsDTO>> findAllOrByCourseName(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
@@ -41,12 +45,10 @@ public class TopicController {
     @PostMapping
     @Transactional
     @CacheEvict(value = "topicAllList", allEntries = true)
-    public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO,
-                                                UriComponentsBuilder uriBuilder) {
-        var topic = insertTopicDTO.toEntity(courseRepository);
-        repository.save(topic);
-        var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
-        return ResponseEntity.created(uri).body(new AddedTopicDTO(topic));
+    public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
+        var addedTopic = service.insert(insertTopicDTO);
+        var uri = uriBuilder.path("/topics/{id}").buildAndExpand(addedTopic.id()).toUri();
+        return ResponseEntity.created(uri).body(addedTopic);
     }
 
     @GetMapping("/{id}")
