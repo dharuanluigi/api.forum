@@ -1,4 +1,4 @@
-package br.com.alura.api.forum.services.interfaces;
+package br.com.alura.api.forum.service.interfaces;
 
 import br.com.alura.api.forum.dto.*;
 import org.springframework.data.domain.Page;
