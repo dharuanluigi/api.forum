@@ -1,13 +1,16 @@
 package br.com.alura.api.forum.service;
 
 import br.com.alura.api.forum.entity.User;
+import br.com.alura.api.forum.exceptions.InvalidTokenException;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -26,17 +29,42 @@ public class TokenService implements ITokenService {
 
     public String create(User user) {
         try {
-            return JWT.create().withIssuer("API Forum").withSubject(user.getEmail()).withExpiresAt(setExpiration()).sign(Algorithm.HMAC256(this.secret));
+            var claims = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
+            return JWT
+                    .create()
+                    .withIssuer("API Forum")
+                    .withSubject(user.getEmail())
+                    .withArrayClaim("cls", claims)
+                    .withExpiresAt(setExpiration())
+                    .sign(Algorithm.HMAC256(this.secret));
         } catch (JWTCreationException e) {
-            throw new RuntimeException("Error when try create auth token, contact system admin", e);
+            throw new InvalidTokenException("Error when try create auth token, contact system admin");
         }
     }
 
     public String validate(String jwtToken) {
         try {
-            return JWT.require(Algorithm.HMAC256(this.secret)).withIssuer("API Forum").build().verify(removeTokenPrefix(jwtToken)).getSubject();
+            return JWT
+                    .require(Algorithm.HMAC256(this.secret))
+                    .withIssuer("API Forum")
+                    .build()
+                    .verify(removeTokenPrefix(jwtToken))
+                    .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid jwt");
+            throw new InvalidTokenException("Invalid token. It is expired or is invalid");
+        }
+    }
+
+    public Claim getRoles(String jwtToken) {
+        try {
+            return JWT
+                    .require(Algorithm.HMAC256(this.secret))
+                    .withIssuer("API Forum")
+                    .build()
+                    .verify(removeTokenPrefix(jwtToken))
+                    .getClaim("cls");
+        } catch (JWTVerificationException exception) {
+            throw new InvalidTokenException("Invalid token. It is expired or is invalid");
         }
     }
 
