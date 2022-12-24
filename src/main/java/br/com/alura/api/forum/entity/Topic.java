@@ -2,13 +2,16 @@ package br.com.alura.api.forum.entity;
 
 import br.com.alura.api.forum.dto.UpdateTopicDTO;
 import br.com.alura.api.forum.entity.enums.TopicStatus;
+import br.com.alura.api.forum.service.interfaces.ITokenService;
 import jakarta.persistence.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,5 +75,22 @@ public class Topic {
         if (updateTopicDTO.message() != null) {
             this.message = updateTopicDTO.message();
         }
+    }
+
+    public Boolean isUserOwner(HttpServletRequest requestHttp, ITokenService tokenService) {
+        var token = requestHttp.getHeader("Authorization");
+        var userEmail = tokenService.validate(token);
+        return Objects.equals(this.author.getEmail(), userEmail);
+    }
+
+    public Boolean isUserModerator(HttpServletRequest requestHttp, ITokenService tokenService) {
+        var token = requestHttp.getHeader("Authorization");
+        var claims = tokenService.getRoles(token);
+        var roles = Arrays.asList(claims.asArray(String.class));
+        return roles.contains("ROLE_MODERATOR");
+    }
+
+    public void close() {
+        this.status = TopicStatus.CLOSED;
     }
 }

@@ -6,8 +6,6 @@ import br.com.alura.api.forum.repository.TopicRepository;
 import br.com.alura.api.forum.service.interfaces.ITopicService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +28,7 @@ public class TopicController {
     private ITopicService service;
 
     @GetMapping
-    @Cacheable(value = "topicAllList")
+    //@Cacheable(value = "topicAllList")
     public ResponseEntity<Page<ListTopicsDTO>> findAllOrByCourseName(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
         if (course_name != null) {
             var foundedTopics = repository.findByCourse_Name(course_name, pagination);
@@ -44,7 +42,7 @@ public class TopicController {
 
     @PostMapping
     @Transactional
-    @CacheEvict(value = "topicAllList", allEntries = true)
+    //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
         var addedTopic = service.insert(insertTopicDTO);
         var uri = uriBuilder.path("/topics/{id}").buildAndExpand(addedTopic.id()).toUri();
@@ -60,17 +58,22 @@ public class TopicController {
 
     @PutMapping("/{id}")
     @Transactional
-    @CacheEvict(value = "topicAllList", allEntries = true)
+    //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<TopicDetailsDTO> update(@PathVariable String id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var updatedTopic = service.update(id, updateTopicDTO);
         return ResponseEntity.ok(updatedTopic);
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
-    @CacheEvict(value = "topicAllList", allEntries = true)
+    //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable String id) {
         repository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/close/{id}")
+    public ResponseEntity<Void> close(@PathVariable String id) {
+        service.close(id);
         return ResponseEntity.noContent().build();
     }
 }
