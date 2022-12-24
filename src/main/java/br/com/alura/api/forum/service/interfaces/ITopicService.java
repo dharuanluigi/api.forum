@@ -10,4 +10,6 @@ public interface ITopicService {
     AddedTopicDTO insert(InsertTopicDTO insertTopicDTO);
 
     TopicDetailsDTO update(String id, UpdateTopicDTO updateTopicDTO);
+
+    void close(String id);
 }

@@ -15,8 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TopicService implements ITopicService {
@@ -51,22 +50,41 @@ public class TopicService implements ITopicService {
     }
 
     @Override
+    @Transactional
     public TopicDetailsDTO update(String id, UpdateTopicDTO updateTopicDTO) {
-        var optional = topicRepository.findById(id);
+        var topic = tryGetTopic(id);
+        if (isCurrentUserOwner(topic)) {
+            topic.updateData(updateTopicDTO);
+            return new TopicDetailsDTO(topic);
+        }
+        throw new UpdateForbiddenException("Current user is not the owner of topic, just owners can update it own topics");
+    }
 
-        if (optional.isPresent()) {
-            var topic = optional.get();
-            var token = requestHttp.getHeader("Authorization");
-            var userEmail = tokenService.validate(token);
+    @Override
+    @Transactional
+    public void close(String id) {
+        var topic = tryGetTopic(id);
 
-            if (Objects.equals(topic.getAuthor().getEmail(), userEmail)) {
-                topic.updateData(updateTopicDTO);
-                return new TopicDetailsDTO(topic);
-            }
-
-            throw new UpdateForbiddenException("Current user is not the owner of topic, just owners can be update it own topics");
+        if (!isCurrentUserOwner(topic) && !isCurrentUserModerator(topic)) {
+            throw new UpdateForbiddenException("Just Moderators or topic owners can close your own topics");
         }
 
-        throw new EntityNotFoundException("Topic was not found");
+        topic.close();
+    }
+
+    private Topic tryGetTopic(String id) {
+        var optional = topicRepository.findById(id);
+        if (optional.isEmpty()) {
+            throw new EntityNotFoundException("Topic was not found");
+        }
+        return optional.get();
+    }
+
+    private Boolean isCurrentUserOwner(Topic topic) {
+        return topic.isUserOwner(requestHttp, tokenService);
+    }
+
+    private Boolean isCurrentUserModerator(Topic topic) {
+        return topic.isUserModerator(requestHttp, tokenService);
     }
 }
