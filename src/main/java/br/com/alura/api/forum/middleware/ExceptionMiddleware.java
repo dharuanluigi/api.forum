@@ -2,6 +2,8 @@ package br.com.alura.api.forum.middleware;
 
 import br.com.alura.api.forum.dto.ErrorResponseDTO;
 import br.com.alura.api.forum.dto.InsertDataErrorDTO;
+import br.com.alura.api.forum.exceptions.InvalidTokenException;
+import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -41,5 +43,17 @@ public class ExceptionMiddleware {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ErrorResponseDTO constraintException(SQLIntegrityConstraintViolationException e) {
         return new ErrorResponseDTO("E-mail already is used, choose another one");
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(UpdateForbiddenException.class)
+    public ErrorResponseDTO updateForbiddenException(UpdateForbiddenException e) {
+        return new ErrorResponseDTO(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(InvalidTokenException.class)
+    public ErrorResponseDTO invalidTokenException(InvalidTokenException e) {
+        return new ErrorResponseDTO(e.getMessage());
     }
 }
