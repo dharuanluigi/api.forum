@@ -11,7 +11,6 @@ INSERT INTO tb_profile(id, name) VALUES('a7746f20-852b-11ed-a1eb-0242ac120002', 
 --- Categories ---
 INSERT INTO tb_category(id, name) VALUES('01b09428-852c-11ed-a1eb-0242ac120002', 'Programacao');
 
-
 ---------------------------------------- Add relationship --------------------------------------------------------------
 
 --- User into profiles ---
@@ -24,8 +23,8 @@ INSERT INTO tb_course(id, name, category_id) VALUES('b29c16fe-854a-11ed-a1eb-024
 INSERT INTO tb_course(id, name, category_id) VALUES('bab3ca3a-854a-11ed-a1eb-0242ac120002', 'HTML 5', '01b09428-852c-11ed-a1eb-0242ac120002');
 
 --- Category with courses
-INSERT INTO tb_category_courses(categories_id, courses_id) VALUES('01b09428-852c-11ed-a1eb-0242ac120002', 'b29c16fe-854a-11ed-a1eb-0242ac120002');
-INSERT INTO tb_category_courses(categories_id, courses_id) VALUES('01b09428-852c-11ed-a1eb-0242ac120002', 'bab3ca3a-854a-11ed-a1eb-0242ac120002');
+INSERT INTO tb_category_courses(category_id, courses_id) VALUES('01b09428-852c-11ed-a1eb-0242ac120002', 'b29c16fe-854a-11ed-a1eb-0242ac120002');
+INSERT INTO tb_category_courses(category_id, courses_id) VALUES('01b09428-852c-11ed-a1eb-0242ac120002', 'bab3ca3a-854a-11ed-a1eb-0242ac120002');
 
 --- Topics
 INSERT INTO tb_topic(id, title, message, created_at, status, author_id, course_id) VALUES('728ecd08-854b-11ed-a1eb-0242ac120002', 'Dúvida', 'Erro ao criar projeto', '2019-05-05T18:00:00Z', 'NOT_ANSWERED', '57470ac6-852b-11ed-a1eb-0242ac120002', 'b29c16fe-854a-11ed-a1eb-0242ac120002');

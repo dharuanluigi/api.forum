@@ -9,20 +9,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-@Profile("default")
+@Profile("dev")
 public class DevSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/**").permitAll();
-            try {
-                auth.and().csrf().disable();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        return http.build();
+        return http
+                .csrf()
+                .disable()
+                .headers()
+                .frameOptions()
+                .disable()
+                .and()
+                .build();
     }
 }
