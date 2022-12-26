@@ -1,6 +1,5 @@
 package br.com.alura.api.forum.repository;
 
-import br.com.alura.api.forum.entity.Course;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +26,19 @@ public class CourseRepositoryTests {
 
     @Test
     void shouldReturnACourseWithValidNameStorage() {
-        this.testEntityManager.getEntityManager().persist(new Course(null, "HTML 5", "Programacao"));
         var course = repository.findByName("HTML 5");
         Assert.notNull(course, "Course was get by name is null");
     }
 
     @Test
     void shouldReturnACourseWithTheSameNameWasStorage() {
-        this.testEntityManager.getEntityManager().persist(new Course(null, "HTML 5", "Programacao"));
         var course = repository.findByName("HTML 5");
-        Assert.isTrue(Objects.equals(course.getName(), "HTML 5"), "The course was looking for is different was " +
-                "provided");
+        Assert.isTrue(Objects.equals(course.getName(), "HTML 5"), "The course was looking for is different was provided");
     }
 
     @Test
     void shouldNOTReturnACourseWithInvalidNameStorage() {
-        this.testEntityManager.getEntityManager().persist(new Course(null, "HTML 5", "Programacao"));
-        var course = repository.findByName("XXXXXX");
+        var course = repository.findByName("iii");
         Assert.isNull(course, "Course was found, but didn't");
     }
 }
