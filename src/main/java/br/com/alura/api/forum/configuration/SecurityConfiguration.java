@@ -40,8 +40,10 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/topics").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR")
-                .anyRequest().authenticated()
-                .and().addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .anyRequest()
+                .authenticated()
+                .and()
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
