@@ -25,7 +25,7 @@ public class AuthenticationControllerTest {
     @Test
     void shouldReturnFORBIDDENofInvalidAuthenticationData() throws Exception {
         var uri = new URI("/auth");
-        var bodyRequest = "{ \"email\": \"xxx@email.com\", \"password\": \"xxxxx\"}";
+        var bodyRequest = "{ \"email\": \"xxx@email.com\", \"password\": \"xxx\"}";
         mockMvc.perform(MockMvcRequestBuilders.post(uri).content(bodyRequest).contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().is(HttpStatus.FORBIDDEN.value()));
     }
 
