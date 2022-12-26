@@ -20,7 +20,7 @@ INSERT INTO tb_user_profiles(user_id, profiles_id) VALUES('79f89eea-852b-11ed-a1
 INSERT INTO tb_user_profiles(user_id, profiles_id) VALUES('79f89eea-852b-11ed-a1eb-0242ac120002', 'a7746f20-852b-11ed-a1eb-0242ac120002'); -- set mod to role user
 
 --- Course with categories ---
-INSERT INTO tb_course(id, name, category_id) VALUES('b29c16fe-854a-11ed-a1eb-0242ac120002', 'Java', '01b09428-852c-11ed-a1eb-0242ac120002';
+INSERT INTO tb_course(id, name, category_id) VALUES('b29c16fe-854a-11ed-a1eb-0242ac120002', 'Java', '01b09428-852c-11ed-a1eb-0242ac120002');
 INSERT INTO tb_course(id, name, category_id) VALUES('bab3ca3a-854a-11ed-a1eb-0242ac120002', 'HTML 5', '01b09428-852c-11ed-a1eb-0242ac120002');
 
 --- Category with courses
