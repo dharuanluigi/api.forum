@@ -27,15 +27,21 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListUserDTO>> findAll(@PageableDefault Pageable pagination) {
+    public ResponseEntity<Page<DetailsUserDTO>> findAll(@PageableDefault Pageable pagination) {
         var allUsers = userService.findAll(pagination);
         return ResponseEntity.ok(allUsers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ListUserDTO> findById(@PathVariable String id) {
+    public ResponseEntity<DetailsUserBaseDTO> findById(@PathVariable String id) {
         var foundedUser = userService.findById(id);
         return ResponseEntity.ok(foundedUser);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<DetailsOwnUserDTO> getDataCurrentLoggedUser() {
+        var userData = userService.getCurrentUserData();
+        return ResponseEntity.ok(userData);
     }
 
     @PutMapping("/{id}")

@@ -8,11 +8,13 @@ public interface IUserService {
 
     CreatedUserDTO create(InsertUserDTO insertUserDTO);
 
-    Page<ListUserDTO> findAll(Pageable pagination);
+    Page<DetailsUserDTO> findAll(Pageable pagination);
 
-    ListUserDTO findById(String id);
+    DetailsUserBaseDTO findById(String id);
 
     UpdatedUserDTO update(String id, UpdateUserDTO updateUserDTO);
 
     void delete(String id);
+
+    DetailsOwnUserDTO getCurrentUserData();
 }
