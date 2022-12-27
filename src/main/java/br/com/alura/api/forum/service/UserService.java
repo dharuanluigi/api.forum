@@ -42,15 +42,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Page<ListUserDTO> findAll(Pageable pagination) {
+    public Page<DetailsUserDTO> findAll(Pageable pagination) {
         var foundedUsers = userRepository.findAll(pagination);
-        return foundedUsers.map(ListUserDTO::new);
+        return foundedUsers.map(DetailsUserDTO::new);
     }
 
     @Override
-    public ListUserDTO findById(String id) {
+    public DetailsUserBaseDTO findById(String id) {
         var user = userRepository.getReferenceById(id);
-        return new ListUserDTO(user);
+
+        if (tokenService.isUserTheOwner(user)) {
+            return new DetailsOwnUserDTO(user);
+        }
+
+        return new DetailsUserDTO(user);
     }
 
     @Override
