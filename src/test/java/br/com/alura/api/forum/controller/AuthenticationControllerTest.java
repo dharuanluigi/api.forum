@@ -28,5 +28,4 @@ public class AuthenticationControllerTest {
         var bodyRequest = "{ \"email\": \"xxx@email.com\", \"password\": \"xxx\"}";
         mockMvc.perform(MockMvcRequestBuilders.post(uri).content(bodyRequest).contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().is(HttpStatus.FORBIDDEN.value()));
     }
-
 }
