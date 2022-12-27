@@ -15,4 +15,6 @@ public interface IUserService {
     UpdatedUserDTO update(String id, UpdateUserDTO updateUserDTO);
 
     void delete(String id);
+
+    DetailsOwnUserDTO getCurrentUserData();
 }

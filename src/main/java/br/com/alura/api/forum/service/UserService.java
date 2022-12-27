@@ -7,6 +7,7 @@ import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,14 +22,13 @@ import java.util.List;
 public class UserService implements IUserService {
 
     @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ProfileRepository profileRepository;
-
     @Autowired
     private ITokenService tokenService;
-
     @Autowired
     private Faker faker;
 
@@ -56,6 +56,14 @@ public class UserService implements IUserService {
         }
 
         return new DetailsUserDTO(user);
+    }
+
+    @Override
+    public DetailsOwnUserDTO getCurrentUserData() {
+        var token = httpServletRequest.getHeader("Authorization");
+        var email = tokenService.validate(token);
+        var user = userRepository.findByEmail(email);
+        return new DetailsOwnUserDTO(user);
     }
 
     @Override

@@ -38,6 +38,12 @@ public class UserController {
         return ResponseEntity.ok(foundedUser);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<DetailsOwnUserDTO> getDataCurrentLoggedUser() {
+        var userData = userService.getCurrentUserData();
+        return ResponseEntity.ok(userData);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UpdatedUserDTO> update(@PathVariable String id, @RequestBody UpdateUserDTO updateUserDTO) {
         var user = userService.update(id, updateUserDTO);
