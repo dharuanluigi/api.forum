@@ -2,8 +2,10 @@ package br.com.alura.api.forum.service;
 
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.entity.User;
+import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
+import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private ITokenService tokenService;
 
     @Override
     @Transactional
@@ -49,8 +54,13 @@ public class UserService implements IUserService {
     @Transactional
     public UpdatedUserDTO update(String id, UpdateUserDTO updateUserDTO) {
         var user = userRepository.getReferenceById(id);
-        user.update(updateUserDTO);
-        return new UpdatedUserDTO(user);
+
+        if (tokenService.isUserTheOwner(user)) {
+            user.update(updateUserDTO);
+            return new UpdatedUserDTO(user);
+        }
+
+        throw new UpdateForbiddenException("Just the owner of data can update your own data");
     }
 
     @Override
