@@ -4,9 +4,9 @@ import br.com.alura.api.forum.entity.User;
 
 import java.util.List;
 
-public record ListUserDTO(String id, String email, List<ListProfileDTO> profiles) {
+public record ListUserDTO(String id, String username, List<ListProfileDTO> profiles) {
     public ListUserDTO(User user) {
-        this(user.getId(), user.getEmail(),
+        this(user.getId(), user.getUsername(),
                 user.getProfiles().stream().map(p -> new ListProfileDTO(p.getName())).toList());
     }
 }

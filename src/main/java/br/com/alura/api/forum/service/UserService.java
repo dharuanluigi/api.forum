@@ -7,6 +7,7 @@ import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +29,14 @@ public class UserService implements IUserService {
     @Autowired
     private ITokenService tokenService;
 
+    @Autowired
+    private Faker faker;
+
     @Override
     @Transactional
     public CreatedUserDTO create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
-        var user = userRepository.save(new User(null, insertUserDTO.name(), insertUserDTO.email(),
+        var user = userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
                 new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles)));
         return new CreatedUserDTO(user);
     }
@@ -40,8 +44,7 @@ public class UserService implements IUserService {
     @Override
     public Page<ListUserDTO> findAll(Pageable pagination) {
         var foundedUsers = userRepository.findAll(pagination);
-        return foundedUsers.map(u -> new ListUserDTO(u.getId(), u.getEmail(),
-                u.getProfiles().stream().map(p -> new ListProfileDTO(p.getName())).toList()));
+        return foundedUsers.map(ListUserDTO::new);
     }
 
     @Override

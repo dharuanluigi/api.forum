@@ -1,6 +1,7 @@
 package br.com.alura.api.forum.configuration;
 
 import br.com.alura.api.forum.filter.AuthenticationFilter;
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,5 +56,10 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public Faker faker() {
+        return new Faker();
     }
 }
