@@ -2,6 +2,7 @@ package br.com.alura.api.forum.service;
 
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.entity.User;
+import br.com.alura.api.forum.exceptions.DeleteForbiddenException;
 import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserRepository;
@@ -82,6 +83,12 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public void delete(String id) {
-        userRepository.deleteById(id);
+        var user = userRepository.getReferenceById(id);
+
+        if (tokenService.isUserTheOwner(user) || tokenService.isUserModerator()) {
+            userRepository.deleteById(id);
+        } else {
+            throw new DeleteForbiddenException("Just the account owner can delete it self");
+        }
     }
 }
