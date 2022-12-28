@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Service
@@ -65,6 +66,13 @@ public class TokenService implements ITokenService {
         var token = httpServletRequest.getHeader("Authorization");
         var userEmail = validate(token);
         return Objects.equals(user.getEmail(), userEmail);
+    }
+
+    public Boolean isUserModerator() {
+        var token = httpServletRequest.getHeader("Authorization");
+        var claims = getRoles(token);
+        var roles = Arrays.asList(claims.asArray(String.class));
+        return roles.contains("ROLE_MODERATOR");
     }
 
     public Claim getRoles(String jwtToken) {
