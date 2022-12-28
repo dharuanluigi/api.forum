@@ -2,6 +2,8 @@ package br.com.alura.api.forum.middleware;
 
 import br.com.alura.api.forum.dto.ErrorResponseDTO;
 import br.com.alura.api.forum.dto.InsertDataErrorDTO;
+import br.com.alura.api.forum.exceptions.DeleteForbiddenException;
+import br.com.alura.api.forum.exceptions.ForbiddenExceptionBase;
 import br.com.alura.api.forum.exceptions.InvalidTokenException;
 import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,8 +48,8 @@ public class ExceptionMiddleware {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(UpdateForbiddenException.class)
-    public ErrorResponseDTO updateForbiddenException(UpdateForbiddenException e) {
+    @ExceptionHandler({UpdateForbiddenException.class, DeleteForbiddenException.class})
+    public ErrorResponseDTO updateForbiddenException(ForbiddenExceptionBase e) {
         return new ErrorResponseDTO(e.getMessage());
     }
 
