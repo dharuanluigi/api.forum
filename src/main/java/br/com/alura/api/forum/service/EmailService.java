@@ -6,16 +6,29 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
+@Service
 public class EmailService implements IEmailService {
+
+    @Value("${api.forum.email.access.username}")
+    private String username;
+
+    @Value("${api.forum.email.access.password}")
+    private String password;
+
+    @Value("${api.forum.application.email}")
+    private String applicationEmail;
+
     @Override
-    public void SendActivationCode(String email, String code) {
+    public void sendActivationCode(String email, String code) {
         try {
             var props = new Properties();
             props.put("mail.smtp.auth", true);
-            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.starttls.enableAccount", true);
             props.put("mail.smtp.host", "smtp.mailtrap.io");
             props.put("mail.smtp.port", "2525");
             props.put("mail.smtp.ssl.trust", "smtp.mailtrap.io");
@@ -23,17 +36,17 @@ public class EmailService implements IEmailService {
             var session = Session.getInstance(props, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("e258538622ef95", "388cdd70b2fbd0");
+                    return new PasswordAuthentication(username, password);
                 }
             });
 
 
             var message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("1d6e840eba-246989+1@inbox.mailtrap.io"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("dharuanluigi@gmail.com"));
+            message.setFrom(new InternetAddress(applicationEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("Forum code confirmation");
 
-            var msg = "Your activation code is: ad2112";
+            var msg = "Please, don't share this code with anyone! <br/><br/>Your account activation code is: " + code;
 
             var mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
