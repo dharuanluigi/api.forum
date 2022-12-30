@@ -38,7 +38,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Profile> profiles = new ArrayList<>();
 
-    private Boolean isActive = false;
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private Boolean isActive;
 
     @Override
     public boolean equals(Object o) {

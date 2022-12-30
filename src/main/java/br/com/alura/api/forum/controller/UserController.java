@@ -26,12 +26,6 @@ public class UserController {
         return ResponseEntity.created(uri).body(userCreated);
     }
 
-    @PatchMapping
-    public ResponseEntity<Void> active(@RequestHeader String code) {
-        userService.activate(code);
-        return ResponseEntity.accepted().build();
-    }
-
     @GetMapping
     public ResponseEntity<Page<DetailsUserDTO>> findAll(@PageableDefault Pageable pagination) {
         var allUsers = userService.findAll(pagination);
@@ -60,5 +54,16 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> active(@RequestHeader String code) {
+        userService.activate(code);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/get-activation-code")
+    public ResponseEntity<Void> requestAccountActivation(@RequestBody LoginDTO loginDTO) {
+        return null;
     }
 }

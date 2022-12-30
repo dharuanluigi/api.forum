@@ -48,10 +48,7 @@ public class UserService implements IUserService {
         var user = userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
                 new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles), false));
 
-        var activationCode = String.valueOf(Instant.now().getNano());
-        var activation = new UserActivation(null, activationCode, Instant.now(), user);
-        userActivationRepository.save(activation);
-
+        var activationCode = generateActivationCode(user);
         emailService.sendActivationCode(user.getEmail(), activationCode);
 
         return new CreatedUserDTO(user);
@@ -114,5 +111,12 @@ public class UserService implements IUserService {
         } else {
             throw new DeleteForbiddenException("Just the account owner can delete it self");
         }
+    }
+
+    private String generateActivationCode(User user) {
+        var activationCode = String.valueOf(Instant.now().getNano());
+        var activation = new UserActivation(null, activationCode, Instant.now(), user);
+        userActivationRepository.save(activation);
+        return activationCode;
     }
 }
