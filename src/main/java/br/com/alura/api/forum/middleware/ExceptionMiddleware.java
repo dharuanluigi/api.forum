@@ -2,10 +2,8 @@ package br.com.alura.api.forum.middleware;
 
 import br.com.alura.api.forum.dto.ErrorResponseDTO;
 import br.com.alura.api.forum.dto.InsertDataErrorDTO;
-import br.com.alura.api.forum.exceptions.DeleteForbiddenException;
 import br.com.alura.api.forum.exceptions.ForbiddenExceptionBase;
 import br.com.alura.api.forum.exceptions.InvalidTokenException;
-import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -48,8 +46,8 @@ public class ExceptionMiddleware {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler({UpdateForbiddenException.class, DeleteForbiddenException.class})
-    public ErrorResponseDTO updateForbiddenException(ForbiddenExceptionBase e) {
+    @ExceptionHandler(ForbiddenExceptionBase.class)
+    public ErrorResponseDTO forbiddenException(ForbiddenExceptionBase e) {
         return new ErrorResponseDTO(e.getMessage());
     }
 
