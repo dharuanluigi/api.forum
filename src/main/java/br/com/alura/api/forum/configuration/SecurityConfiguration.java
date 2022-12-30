@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/active-old-account").permitAll()
