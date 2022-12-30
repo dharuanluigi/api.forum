@@ -4,10 +4,12 @@ import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.entity.User;
 import br.com.alura.api.forum.entity.UserActivation;
 import br.com.alura.api.forum.exceptions.DeleteForbiddenException;
+import br.com.alura.api.forum.exceptions.InvalidTokenException;
 import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import br.com.alura.api.forum.repository.ProfileRepository;
 import br.com.alura.api.forum.repository.UserActivationRepository;
 import br.com.alura.api.forum.repository.UserRepository;
+import br.com.alura.api.forum.service.interfaces.IAuthenticationService;
 import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
@@ -39,6 +41,9 @@ public class UserService implements IUserService {
     @Autowired
     private UserActivationRepository userActivationRepository;
     @Autowired
+    private IAuthenticationService authenticationService;
+
+    @Autowired
     private Faker faker;
 
     @Override
@@ -57,10 +62,15 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public void activate(String code) {
-        var act = userActivationRepository.findByCode(code);
-        var user = userRepository.getReferenceById(act.getUser().getId());
+        var activation = userActivationRepository.findByCode(code);
+
+        if (activation == null) {
+            throw new InvalidTokenException("The activation code is invalid");
+        }
+
+        var user = userRepository.getReferenceById(activation.getUser().getId());
         user.enableAccount();
-        userActivationRepository.delete(act);
+        userActivationRepository.delete(activation);
     }
 
     @Override
@@ -111,6 +121,18 @@ public class UserService implements IUserService {
         } else {
             throw new DeleteForbiddenException("Just the account owner can delete it self");
         }
+    }
+
+    @Override
+    public void activeOldAccount(String email, String password) {
+        var user = authenticationService.loginUser(email, password);
+
+        if (user.getIsActive()) {
+            throw new IllegalArgumentException("User already activated");
+        }
+
+        var activationCode = generateActivationCode(user);
+        emailService.sendActivationCode(user.getEmail(), activationCode);
     }
 
     private String generateActivationCode(User user) {

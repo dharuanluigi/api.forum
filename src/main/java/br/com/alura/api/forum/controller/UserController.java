@@ -56,14 +56,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping
+    @PatchMapping("/active")
     public ResponseEntity<Void> active(@RequestHeader String code) {
         userService.activate(code);
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("/get-activation-code")
-    public ResponseEntity<Void> requestAccountActivation(@RequestBody LoginDTO loginDTO) {
-        return null;
+    @PostMapping("/active-old-account")
+    public ResponseEntity<Void> generateCodeToActiveOldAccount(@RequestBody LoginDTO loginDTO) {
+        userService.activeOldAccount(loginDTO.email(), loginDTO.password());
+        return ResponseEntity.accepted().build();
     }
 }

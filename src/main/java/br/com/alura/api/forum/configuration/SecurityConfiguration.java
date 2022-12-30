@@ -39,6 +39,8 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/active-old-account").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/users/active").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR")
                 .anyRequest()
                 .authenticated()

@@ -19,4 +19,6 @@ public interface IUserService {
     void delete(String id);
 
     DetailsOwnUserDTO getCurrentUserData();
+
+    void activeOldAccount(String email, String password);
 }
