@@ -65,7 +65,11 @@ public class UserService implements IUserService {
         var activation = userActivationRepository.findByCode(code);
 
         if (activation == null) {
-            throw new InvalidTokenException("The activation code is invalid");
+            throw new InvalidTokenException("The activation code is invalid!");
+        }
+
+        if (activation.isExpired()) {
+            throw new InvalidTokenException("Activation code is expired!");
         }
 
         var user = userRepository.getReferenceById(activation.getUser().getId());
@@ -131,13 +135,19 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("User already activated");
         }
 
+        var expiredCode = userActivationRepository.findByUserId(user.getId());
+
+        if (expiredCode != null) {
+            userActivationRepository.delete(expiredCode);
+        }
+
         var activationCode = generateActivationCode(user);
         emailService.sendActivationCode(user.getEmail(), activationCode);
     }
 
     private String generateActivationCode(User user) {
         var activationCode = String.valueOf(Instant.now().getNano());
-        var activation = new UserActivation(null, activationCode, Instant.now(), user);
+        var activation = new UserActivation(activationCode, Instant.now(), user);
         userActivationRepository.save(activation);
         return activationCode;
     }

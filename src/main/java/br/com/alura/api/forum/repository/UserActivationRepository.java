@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface UserActivationRepository extends JpaRepository<UserActivation, String> {
 
     UserActivation findByCode(String code);
+
+    UserActivation findByUserId(String id);
 }
