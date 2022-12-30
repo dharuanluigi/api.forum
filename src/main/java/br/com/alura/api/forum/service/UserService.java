@@ -2,10 +2,13 @@ package br.com.alura.api.forum.service;
 
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.entity.User;
+import br.com.alura.api.forum.entity.UserActivation;
 import br.com.alura.api.forum.exceptions.DeleteForbiddenException;
 import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
 import br.com.alura.api.forum.repository.ProfileRepository;
+import br.com.alura.api.forum.repository.UserActivationRepository;
 import br.com.alura.api.forum.repository.UserRepository;
+import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +20,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
 public class UserService implements IUserService {
 
+    @Autowired
+    IEmailService emailService;
     @Autowired
     private HttpServletRequest httpServletRequest;
     @Autowired
@@ -31,6 +37,8 @@ public class UserService implements IUserService {
     @Autowired
     private ITokenService tokenService;
     @Autowired
+    private UserActivationRepository userActivationRepository;
+    @Autowired
     private Faker faker;
 
     @Override
@@ -38,8 +46,24 @@ public class UserService implements IUserService {
     public CreatedUserDTO create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
         var user = userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
-                new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles)));
+                new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles), false));
+
+        var activationCode = String.valueOf(Instant.now().getNano());
+        var activation = new UserActivation(null, activationCode, Instant.now(), user);
+        userActivationRepository.save(activation);
+
+        emailService.sendActivationCode(user.getEmail(), activationCode);
+
         return new CreatedUserDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public void activate(String code) {
+        var act = userActivationRepository.findByCode(code);
+        var user = userRepository.getReferenceById(act.getUser().getId());
+        user.enableAccount();
+        userActivationRepository.delete(act);
     }
 
     @Override

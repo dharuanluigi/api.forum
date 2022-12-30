@@ -8,6 +8,8 @@ public interface IUserService {
 
     CreatedUserDTO create(InsertUserDTO insertUserDTO);
 
+    void activate(String code);
+
     Page<DetailsUserDTO> findAll(Pageable pagination);
 
     DetailsUserBaseDTO findById(String id);
