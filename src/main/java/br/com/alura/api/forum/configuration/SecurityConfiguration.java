@@ -1,7 +1,6 @@
 package br.com.alura.api.forum.configuration;
 
 import br.com.alura.api.forum.filter.AuthenticationFilter;
-import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +41,8 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/active-old-account").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/users/active").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR")
                 .anyRequest()
                 .authenticated()
@@ -58,10 +59,5 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public Faker faker() {
-        return new Faker();
     }
 }

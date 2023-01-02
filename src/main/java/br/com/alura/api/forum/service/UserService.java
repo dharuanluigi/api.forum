@@ -14,7 +14,6 @@ import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.ITokenService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
-import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,9 +41,6 @@ public class UserService implements IUserService {
     private UserActivationRepository userActivationRepository;
     @Autowired
     private IAuthenticationService authenticationService;
-
-    @Autowired
-    private Faker faker;
 
     @Override
     @Transactional
