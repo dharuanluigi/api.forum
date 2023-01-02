@@ -50,7 +50,7 @@ public class UserService implements IUserService {
     @Transactional
     public User create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
-        return userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
+        return userRepository.save(new User(null, insertUserDTO.name(), insertUserDTO.username(), insertUserDTO.email(),
                 new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles), false));
     }
 
