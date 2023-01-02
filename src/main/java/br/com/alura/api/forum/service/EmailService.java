@@ -46,7 +46,7 @@ public class EmailService implements IEmailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("Forum code confirmation");
 
-            var msg = "Please, don't share this code with anyone! <br/><br/>Your account activation code is: " + code;
+            var msg = "Please, don't share this code with anyone! This code will be expired in " + 5 + " minutes! <br/><br/>Your account activation code is: " + code;
 
             var mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
