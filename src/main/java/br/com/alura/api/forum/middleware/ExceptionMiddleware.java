@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @RestControllerAdvice
 public class ExceptionMiddleware {
@@ -47,7 +48,21 @@ public class ExceptionMiddleware {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ErrorResponseDTO constraintException(SQLIntegrityConstraintViolationException e) {
-        return new ErrorResponseDTO("E-mail already is used, choose another one");
+        var emailRegex = Pattern.compile("@", Pattern.CASE_INSENSITIVE);
+        var matcher = emailRegex.matcher(e.getMessage());
+
+        if (matcher.find()) {
+            return new ErrorResponseDTO("E-mail already was used, choose another one");
+        }
+
+        var usernameRegex = Pattern.compile("username", Pattern.CASE_INSENSITIVE);
+        var matcherUsername = usernameRegex.matcher(e.getMessage());
+
+        if (matcherUsername.find()) {
+            return new ErrorResponseDTO("Username already was used, choose another one");
+        }
+        System.out.println(e.getMessage());
+        return new ErrorResponseDTO("Invalid operation, contact system admin");
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
