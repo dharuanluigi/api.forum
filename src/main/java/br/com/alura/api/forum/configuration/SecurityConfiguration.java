@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     @Autowired
-    private AuthenticationService service;
+    private AuthenticationConfiguration service;
 
     @Autowired
     private AuthenticationFilter authenticationFilter;
@@ -38,8 +37,11 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/active-old-account").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/users/active").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR")
                 .anyRequest()
                 .authenticated()
@@ -54,7 +56,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 

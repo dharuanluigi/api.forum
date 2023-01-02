@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Profile> profiles = new ArrayList<>();
 
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private Boolean isActive;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,5 +88,9 @@ public class User implements UserDetails {
         if (updateUserDTO.name() != null) {
             this.name = updateUserDTO.name();
         }
+    }
+
+    public void enableAccount() {
+        this.isActive = true;
     }
 }
