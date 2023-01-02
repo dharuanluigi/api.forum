@@ -3,6 +3,8 @@ package br.com.alura.api.forum.controller;
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User", description = "Manage what features the user can doing")
 public class UserController {
 
     @Autowired
@@ -23,6 +26,7 @@ public class UserController {
     private IEmailService emailService;
 
     @PostMapping
+    @Operation(summary = "Creates an user", description = "Endpoint to creates a user access into forum by unique email")
     public ResponseEntity<CreatedUserDTO> create(@RequestBody @Valid InsertUserDTO insertUserDTO,
                                                  UriComponentsBuilder uriBuilder) {
         var user = userService.create(insertUserDTO);
