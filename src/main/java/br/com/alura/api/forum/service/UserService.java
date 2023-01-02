@@ -123,7 +123,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void activeOldAccount(String email, String password) {
+    public void resendActivationCode(String email, String password) {
         var user = authenticationService.loginUser(email, password);
 
         if (user.getIsActive()) {

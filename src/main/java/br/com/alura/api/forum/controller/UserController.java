@@ -71,9 +71,9 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("/active-old-account")
-    public ResponseEntity<Void> generateCodeToActiveOldAccount(@RequestBody LoginDTO loginDTO) {
-        userService.activeOldAccount(loginDTO.email(), loginDTO.password());
+    @PostMapping("/resend-code")
+    public ResponseEntity<Void> resendVerificationCode(@RequestBody LoginDTO loginDTO) {
+        userService.resendActivationCode(loginDTO.email(), loginDTO.password());
         return ResponseEntity.accepted().build();
     }
 }

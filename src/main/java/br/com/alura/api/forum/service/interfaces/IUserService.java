@@ -21,7 +21,7 @@ public interface IUserService {
 
     DetailsOwnUserDTO getCurrentUserData();
 
-    void activeOldAccount(String email, String password);
+    void resendActivationCode(String email, String password);
 
     String generateActivationCode(User user);
 }
