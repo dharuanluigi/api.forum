@@ -27,6 +27,9 @@ public class User implements UserDetails {
     private String name;
 
     @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -34,6 +37,9 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Profile> profiles = new ArrayList<>();
+
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private Boolean isActive;
 
     @Override
     public boolean equals(Object o) {
@@ -55,7 +61,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.name;
+        return this.username;
     }
 
     @Override
@@ -82,5 +88,9 @@ public class User implements UserDetails {
         if (updateUserDTO.name() != null) {
             this.name = updateUserDTO.name();
         }
+    }
+
+    public void enableAccount() {
+        this.isActive = true;
     }
 }

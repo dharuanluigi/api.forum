@@ -10,4 +10,8 @@ public interface ITokenService {
     String validate(String jwtToken);
 
     Claim getRoles(String jwtToken);
+
+    Boolean isUserTheOwner(User user);
+
+    Boolean isUserModerator();
 }

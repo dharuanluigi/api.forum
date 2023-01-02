@@ -2,8 +2,7 @@ package br.com.alura.api.forum.middleware;
 
 import br.com.alura.api.forum.dto.ErrorResponseDTO;
 import br.com.alura.api.forum.dto.InsertDataErrorDTO;
-import br.com.alura.api.forum.exceptions.InvalidTokenException;
-import br.com.alura.api.forum.exceptions.UpdateForbiddenException;
+import br.com.alura.api.forum.exceptions.ForbiddenExceptionBase;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -33,6 +32,12 @@ public class ExceptionMiddleware {
         }).toList();
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResponseDTO invalidArgumentException(IllegalArgumentException e) {
+        return new ErrorResponseDTO(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponseDTO notFoundHandler(EntityNotFoundException exception) {
@@ -46,14 +51,8 @@ public class ExceptionMiddleware {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(UpdateForbiddenException.class)
-    public ErrorResponseDTO updateForbiddenException(UpdateForbiddenException e) {
-        return new ErrorResponseDTO(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(InvalidTokenException.class)
-    public ErrorResponseDTO invalidTokenException(InvalidTokenException e) {
+    @ExceptionHandler(ForbiddenExceptionBase.class)
+    public ErrorResponseDTO forbiddenException(ForbiddenExceptionBase e) {
         return new ErrorResponseDTO(e.getMessage());
     }
 }

@@ -1,6 +1,7 @@
 package br.com.alura.api.forum.controller;
 
 import br.com.alura.api.forum.dto.*;
+import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +19,38 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private IEmailService emailService;
+
     @PostMapping
     public ResponseEntity<CreatedUserDTO> create(@RequestBody @Valid InsertUserDTO insertUserDTO,
                                                  UriComponentsBuilder uriBuilder) {
-        var userCreated = userService.create(insertUserDTO);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userCreated.id()).toUri();
-        return ResponseEntity.created(uri).body(userCreated);
+        var user = userService.create(insertUserDTO);
+
+        var activationCode = userService.generateActivationCode(user);
+        emailService.sendActivationCode(user.getEmail(), activationCode);
+
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
+        var createdUserDto = new CreatedUserDTO(user);
+        return ResponseEntity.created(uri).body(createdUserDto);
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListUserDTO>> findAll(@PageableDefault Pageable pagination) {
+    public ResponseEntity<Page<DetailsUserDTO>> findAll(@PageableDefault Pageable pagination) {
         var allUsers = userService.findAll(pagination);
         return ResponseEntity.ok(allUsers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ListUserDTO> findById(@PathVariable String id) {
+    public ResponseEntity<DetailsUserBaseDTO> findById(@PathVariable String id) {
         var foundedUser = userService.findById(id);
         return ResponseEntity.ok(foundedUser);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<DetailsOwnUserDTO> getDataCurrentLoggedUser() {
+        var userData = userService.getCurrentUserData();
+        return ResponseEntity.ok(userData);
     }
 
     @PutMapping("/{id}")
@@ -48,5 +63,17 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/active")
+    public ResponseEntity<Void> active(@RequestHeader String code) {
+        userService.activate(code);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/resend-code")
+    public ResponseEntity<Void> resendVerificationCode(@RequestBody LoginDTO loginDTO) {
+        userService.resendActivationCode(loginDTO.email(), loginDTO.password());
+        return ResponseEntity.accepted().build();
     }
 }
