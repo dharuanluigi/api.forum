@@ -48,15 +48,10 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public CreatedUserDTO create(InsertUserDTO insertUserDTO) {
+    public User create(InsertUserDTO insertUserDTO) {
         var profiles = profileRepository.findByName("ROLE_USER");
-        var user = userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
+        return userRepository.save(new User(null, insertUserDTO.name(), faker.superhero().prefix(), insertUserDTO.email(),
                 new BCryptPasswordEncoder(10).encode(insertUserDTO.password()), List.of(profiles), false));
-
-        var activationCode = generateActivationCode(user);
-        emailService.sendActivationCode(user.getEmail(), activationCode);
-
-        return new CreatedUserDTO(user);
     }
 
     @Override
@@ -145,7 +140,7 @@ public class UserService implements IUserService {
         emailService.sendActivationCode(user.getEmail(), activationCode);
     }
 
-    private String generateActivationCode(User user) {
+    public String generateActivationCode(User user) {
         var activationCode = String.valueOf(Instant.now().getNano());
         var activation = new UserActivation(activationCode, Instant.now(), user);
         userActivationRepository.save(activation);

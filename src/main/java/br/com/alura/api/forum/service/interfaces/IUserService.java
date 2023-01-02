@@ -1,12 +1,13 @@
 package br.com.alura.api.forum.service.interfaces;
 
 import br.com.alura.api.forum.dto.*;
+import br.com.alura.api.forum.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface IUserService {
 
-    CreatedUserDTO create(InsertUserDTO insertUserDTO);
+    User create(InsertUserDTO insertUserDTO);
 
     void activate(String code);
 
@@ -21,4 +22,6 @@ public interface IUserService {
     DetailsOwnUserDTO getCurrentUserData();
 
     void activeOldAccount(String email, String password);
+
+    String generateActivationCode(User user);
 }
