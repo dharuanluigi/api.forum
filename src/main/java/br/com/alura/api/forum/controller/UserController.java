@@ -3,6 +3,7 @@ package br.com.alura.api.forum.controller;
 import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.service.interfaces.IEmailService;
 import br.com.alura.api.forum.service.interfaces.IUserService;
+import br.com.alura.api.forum.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,9 +20,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/users")
 @Tag(name = "User", description = "Manage what features the user can doing")
 public class UserController {
-
-    private final String SECURITY_HEADER_VALUE = "Authorization";
-
     @Autowired
     private IUserService userService;
 
@@ -43,35 +41,35 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(security = {@SecurityRequirement(name = SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<Page<DetailsUserDTO>> findAll(@PageableDefault Pageable pagination) {
         var allUsers = userService.findAll(pagination);
         return ResponseEntity.ok(allUsers);
     }
 
     @GetMapping("/{id}")
-    @Operation(security = {@SecurityRequirement(name = SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<DetailsUserBaseDTO> findById(@PathVariable String id) {
         var foundedUser = userService.findById(id);
         return ResponseEntity.ok(foundedUser);
     }
 
     @GetMapping("/me")
-    @Operation(security = {@SecurityRequirement(name = SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<DetailsOwnUserDTO> getDataCurrentLoggedUser() {
         var userData = userService.getCurrentUserData();
         return ResponseEntity.ok(userData);
     }
 
     @PutMapping("/{id}")
-    @Operation(security = {@SecurityRequirement(name = SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<UpdatedUserDTO> update(@PathVariable String id, @RequestBody UpdateUserDTO updateUserDTO) {
         var user = userService.update(id, updateUserDTO);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(security = {@SecurityRequirement(name = SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();

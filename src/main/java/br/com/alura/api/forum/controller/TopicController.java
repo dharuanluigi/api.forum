@@ -4,6 +4,9 @@ import br.com.alura.api.forum.dto.*;
 import br.com.alura.api.forum.repository.CourseRepository;
 import br.com.alura.api.forum.repository.TopicRepository;
 import br.com.alura.api.forum.service.interfaces.ITopicService;
+import br.com.alura.api.forum.util.Constants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +32,7 @@ public class TopicController {
 
     @GetMapping
     //@Cacheable(value = "topicAllList")
-    public ResponseEntity<Page<ListTopicsDTO>> findAllOrByCourseName(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
+    public ResponseEntity<Page<ListTopicsDTO>> findAllWithFilters(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
         if (course_name != null) {
             var foundedTopics = repository.findByCourse_Name(course_name, pagination);
             var foundedTopicsDTOs = foundedTopics.map(ListTopicsDTO::new);
@@ -42,6 +45,7 @@ public class TopicController {
 
     @PostMapping
     @Transactional
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
         var addedTopic = service.insert(insertTopicDTO);
@@ -58,6 +62,7 @@ public class TopicController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<TopicDetailsDTO> update(@PathVariable String id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var updatedTopic = service.update(id, updateTopicDTO);
@@ -65,6 +70,7 @@ public class TopicController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable String id) {
         repository.deleteById(id);
@@ -72,6 +78,7 @@ public class TopicController {
     }
 
     @PostMapping("/close/{id}")
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
     public ResponseEntity<Void> close(@PathVariable String id) {
         service.close(id);
         return ResponseEntity.noContent().build();
