@@ -7,6 +7,7 @@ import br.com.alura.api.forum.service.interfaces.ITopicService;
 import br.com.alura.api.forum.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/topics")
+@Tag(name = "Topic", description = "Topic controller for make actions into forum")
 public class TopicController {
 
     @Autowired
@@ -32,6 +34,7 @@ public class TopicController {
 
     @GetMapping
     //@Cacheable(value = "topicAllList")
+    @Operation(summary = "Find all topics with filter", description = "See all topics was opened with respective filter")
     public ResponseEntity<Page<ListTopicsDTO>> findAllWithFilters(@RequestParam(required = false) String course_name, @PageableDefault Pageable pagination) {
         if (course_name != null) {
             var foundedTopics = repository.findByCourse_Name(course_name, pagination);
@@ -45,7 +48,7 @@ public class TopicController {
 
     @PostMapping
     @Transactional
-    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)}, summary = "Add new topic", description = "Add new topin in forum")
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<AddedTopicDTO> insert(@RequestBody @Valid InsertTopicDTO insertTopicDTO, UriComponentsBuilder uriBuilder) {
         var addedTopic = service.insert(insertTopicDTO);
@@ -54,6 +57,7 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Find a topic", description = "Find details about a topic")
     public ResponseEntity<TopicDetailsDTO> findById(@PathVariable String id) {
         var topic = repository.getReferenceById(id);
         var response = new TopicDetailsDTO(topic);
@@ -62,7 +66,7 @@ public class TopicController {
 
     @PutMapping("/{id}")
     @Transactional
-    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)}, summary = "Update your own topic", description = "Update just your own topic data")
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<TopicDetailsDTO> update(@PathVariable String id, @RequestBody UpdateTopicDTO updateTopicDTO) {
         var updatedTopic = service.update(id, updateTopicDTO);
@@ -70,7 +74,7 @@ public class TopicController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)}, summary = "Delete a topic", description = "Delete just your own topic")
     //@CacheEvict(value = "topicAllList", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable String id) {
         repository.deleteById(id);
@@ -78,7 +82,7 @@ public class TopicController {
     }
 
     @PostMapping("/close/{id}")
-    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)})
+    @Operation(security = {@SecurityRequirement(name = Constants.SECURITY_HEADER_VALUE)}, summary = "Close a topic", description = "Close a topic when it was solved")
     public ResponseEntity<Void> close(@PathVariable String id) {
         service.close(id);
         return ResponseEntity.noContent().build();
