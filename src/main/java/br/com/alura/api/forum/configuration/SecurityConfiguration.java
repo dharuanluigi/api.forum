@@ -1,7 +1,6 @@
 package br.com.alura.api.forum.configuration;
 
 import br.com.alura.api.forum.filter.AuthenticationFilter;
-import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,11 +37,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                .requestMatchers(HttpMethod.GET, "/topics").permitAll()
                 .requestMatchers(HttpMethod.GET, "/topics/*").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users/active-old-account").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/resend-code").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/users/active").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/topics/*").hasRole("MODERATOR")
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -58,10 +58,5 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public Faker faker() {
-        return new Faker();
     }
 }
